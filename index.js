@@ -4,7 +4,6 @@ import fileUpload from 'express-fileupload'
 import { config } from 'dotenv'
 import models from './models/index.js'
 import sequelize from './db.js'
-import ErrorHandler from './middleware/ErrorHandler.js'
 import apiRouter from './routes/index.js'
 
 config()
@@ -18,8 +17,6 @@ app.use(express.json())
 app.use(fileUpload({}))
 
 app.use('/api', apiRouter)
-
-app.use(ErrorHandler)
 
 app.get('/', (req, res) => {
 	res.status(200).json({

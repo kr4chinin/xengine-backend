@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 import { User } from '../models/User.js'
 import { Cart } from '../models/Cart.js'
-import { ApiError } from '../helpers/ApiError.js'
+import { BAD_REQUEST, OK, UNAUTHORIZED } from '../utils/Statuses.js'
 
 function generateJwt(id, email, role) {
 	const payload = {
@@ -14,7 +14,7 @@ function generateJwt(id, email, role) {
 }
 
 class UserController {
-	async registration(req, res, next) {
+	async registration(req, res) {
 		try {
 			const { email, password, role } = req.body
 
@@ -22,12 +22,9 @@ class UserController {
 			const candidate = await User.findOne({ where: { email } })
 
 			if (candidate) {
-				next(
-					ApiError.badRequest(
-						'User with this email already exists',
-						'This email is already taken'
-					)
-				)
+				return res
+					.status(BAD_REQUEST)
+					.json({ message: 'User with this email already exists' })
 			}
 
 			// Hashing password
@@ -42,13 +39,13 @@ class UserController {
 			// Generating JWT token
 			const token = generateJwt(user.id, user.email, user.role)
 
-			return res.status(200).json({ token })
+			return res.status(OK).json({ token })
 		} catch (e) {
-			next(ApiError.badRequest('Registration failed', e.message))
+			return res.status(BAD_REQUEST).json({ message: 'Registration failed' })
 		}
 	}
 
-	async login(req, res, next) {
+	async login(req, res) {
 		try {
 			const { email, password } = req.body
 
@@ -56,38 +53,35 @@ class UserController {
 			const user = await User.findOne({ where: { email } })
 
 			if (!user) {
-				next(
-					ApiError.badRequest(
-						'User with this email does not exist',
-						'User not found'
-					)
-				)
+				return res
+					.status(BAD_REQUEST)
+					.json({ message: 'User with this email not found' })
 			}
 
 			// Checking password
 			const isPasswordValid = bcrypt.compareSync(password, user.password)
 
 			if (!isPasswordValid) {
-				next(ApiError.badRequest('Invalid password', 'Password comparison failed'))
+				return res.status(BAD_REQUEST).json({ message: 'Invalid password' })
 			}
 
 			// Generating JWT token
 			const token = generateJwt(user.id, user.email, user.role)
 
-			return res.status(200).json({ token })
+			return res.status(OK).json({ token })
 		} catch (e) {
-			next(ApiError.badRequest('Login failed', e.message))
+			return res.status(BAD_REQUEST).json({ message: 'Login failed' })
 		}
 	}
 
-    async checkAuth(req, res, next) {
-        try {
-            const token = generateJwt(req.user.id, req.user.email, req.user.role)
-            return res.status(200).json({token})
-        } catch (e) {
-            next(ApiError.unauthorized('Auth check failed', e.message))
-        }
-    }
+	async checkAuth(req, res) {
+		try {
+			const token = generateJwt(req.user.id, req.user.email, req.user.role)
+			return res.status(OK).json({ token })
+		} catch (e) {
+			return res.status(UNAUTHORIZED).json({ message: 'Unauthorized' })
+		}
+	}
 }
 
 export default new UserController()

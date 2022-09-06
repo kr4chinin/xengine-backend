@@ -1,13 +1,13 @@
 import * as uuid from 'uuid'
 import { Vehicle } from '../models/Vehicle.js'
 import { VehicleInfo } from '../models/VehicleInfo.js'
-import { ApiError } from '../helpers/apiError.js'
 import path from 'path'
 import { __dirname } from '../helpers/dirname.js'
 import fs from 'fs'
+import { BAD_REQUEST, OK } from '../utils/Statuses.js'
 
 class VehicleController {
-	async create(req, res, next) {
+	async create(req, res) {
 		try {
 			let { name, price, description, brandId, typeId, info } = req.body
 
@@ -40,7 +40,7 @@ class VehicleController {
 					path.resolve(__dirname, '..', 'static', 'images', fileName)
 				)
 
-				next(ApiError.badRequest('Failed to create a vehicle', e.message))
+				return res.status(BAD_REQUEST).json({ message: 'Failed to create a new vehicle' })
 			}
 
 			// Creating information objects for every vehicle (if info was provided)
@@ -57,13 +57,13 @@ class VehicleController {
 				)
 			}
 
-			if (vehicle) return res.status(200).json(vehicle)
+			if (vehicle) return res.status(OK).json(vehicle)
 		} catch (e) {
-			next(ApiError.badRequest('Failed to create a vehicle', e.message))
+			return res.status(BAD_REQUEST).json({ message: 'Failed to create a new vehicle' })
 		}
 	}
 
-	async getAll(req, res, next) {
+	async getAll(req, res) {
 		try {
 			const { brandId, typeId, limit = 1, page = 1 } = req.query
 
@@ -105,13 +105,13 @@ class VehicleController {
 				vehicles = await Vehicle.findAndCountAll({ limit, offset })
 			}
 
-			return res.status(200).json(vehicles)
+			return res.status(OK).json(vehicles)
 		} catch (e) {
-			next(ApiError.badRequest('Failed to get vehicles', e.message))
+			return res.status(BAD_REQUEST).json({ message: 'Failed to get vehicles' })
 		}
 	}
 
-	async getOne(req, res, next) {
+	async getOne(req, res) {
 		try {
 			const { id } = req.params
 
@@ -121,9 +121,9 @@ class VehicleController {
 				include: [{ model: VehicleInfo, as: 'info' }]
 			})
 
-			return res.status(200).json(vehicle)
+			return res.status(OK).json(vehicle)
 		} catch (e) {
-			next(ApiError.badRequest('Failed to get vehicle by id', e.message))
+			return res.status(BAD_REQUEST).json({ message: 'Failed to get vehicle by id' })
 		}
 	}
 }

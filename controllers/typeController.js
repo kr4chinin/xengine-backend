@@ -1,23 +1,27 @@
-import {Type} from '../models/Type.js'
-import {ApiError} from '../helpers/ApiError.js'
+import { Type } from '../models/Type.js'
+import { BAD_REQUEST, OK } from '../utils/Statuses.js'
 
 class TypeController {
-    async create(req, res, next) {
+	async create(req, res) {
 		try {
 			const { name } = req.body
 			const type = await Type.create({ name })
-			return res.status(200).json(type)
+			return res.status(OK).json(type)
 		} catch (e) {
-			return next(ApiError.badRequest('Failed to create new type', e.message))
+			return res
+				.status(BAD_REQUEST)
+				.json({ message: 'Failed to create a new type' })
 		}
 	}
 
-	async getAll(req, res) {
+	async getAll(_, res) {
 		try {
 			const types = await Type.findAll()
-			return res.status(200).json(types)
+			return res.status(OK).json(types)
 		} catch (e) {
-			next(ApiError.badRequest('Failed to get all types', e.message))
+			return res
+				.status(BAD_REQUEST)
+				.json({ message: 'Failed to get all types' })
 		}
 	}
 }
