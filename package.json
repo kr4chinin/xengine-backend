@@ -18,5 +18,8 @@
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.21.4",
     "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "prettier": "^2.7.1"
   }
 }
