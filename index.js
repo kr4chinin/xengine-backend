@@ -2,6 +2,8 @@ import express from 'express'
 import cors from 'cors'
 import fileUpload from 'express-fileupload'
 import { config } from 'dotenv'
+import models from './models/index.js'
+import sequelize from './db.js'
 
 config()
 
@@ -21,6 +23,8 @@ app.get('/', (req, res) => {
 
 const start = async () => {
     try {
+        await sequelize.authenticate()
+        await sequelize.sync()
         app.listen(PORT, () => {
             console.log(`Server is running on port ${PORT}...`)
         })
