@@ -5,7 +5,7 @@ export default function (err, req, res, next) {
 	// with underlying message and status code
 
 	if (err instanceof ApiError) {
-		return res.status(err.status).json({ message: err.message })
+		return res.status(err.status).json({ info: err.info, message: err.message })
 	}
 
 	// Else we can assume that this is an unknown internal server error

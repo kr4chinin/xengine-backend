@@ -8,7 +8,7 @@ class BrandController {
 			const brand = await Brand.create({ name })
 			return res.status(200).json(brand)
 		} catch (e) {
-			return next(ApiError.badRequest('Failed to create brand'))
+			return next(ApiError.badRequest('Failed to create a brand', e.message))
 		}
 	}
 
@@ -17,7 +17,7 @@ class BrandController {
 			const brands = await Brand.findAll()
 			return res.status(200).json(brands)
 		} catch (e) {
-			next(ApiError.badRequest('Failed to get all brands'))
+			next(ApiError.badRequest('Failed to get all brands', e.message))
 		}
 	}
 }
