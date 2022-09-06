@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt'
 import { User } from '../models/User.js'
 import { Cart } from '../models/Cart.js'
 import { BAD_REQUEST, OK, UNAUTHORIZED } from '../utils/Statuses.js'
+import { validationResult } from 'express-validator'
 
 function generateJwt(id, email, role) {
 	const payload = {
@@ -16,6 +17,15 @@ function generateJwt(id, email, role) {
 class UserController {
 	async registration(req, res) {
 		try {
+			// Checking express-validator validation results
+			const errors = validationResult(req)
+
+			if (!errors.isEmpty()) {
+				return res
+					.status(BAD_REQUEST)
+					.json({ message: 'Invalid email or password' })
+			}
+
 			const { email, password, role } = req.body
 
 			// Check if such user already exists
