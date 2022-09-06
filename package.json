@@ -1,0 +1,22 @@
+{
+  "name": "xengine-server",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "server for xengine-store project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ilya Kruchinin",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.2",
+    "express": "^4.18.1",
+    "express-fileupload": "^1.4.0",
+    "pg": "^8.8.0",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.21.4",
+    "uuid": "^9.0.0"
+  }
+}
