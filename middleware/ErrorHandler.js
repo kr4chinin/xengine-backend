@@ -8,6 +8,6 @@ export default function (err, req, res, next) {
 		return res.status(err.status).json({ info: err.info, message: err.message })
 	}
 
-	// Else we can assume that this is an unknown internal server error
-	return res.status(500).json({ message: 'Unknown internal server error' })
+	// Else we can assume that this is an internal server error
+	return res.status(500).json({ info: 'Internal server error', message: err.message })
 }
