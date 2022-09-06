@@ -1,8 +1,9 @@
-import { Router } from "express";
+import { Router } from 'express'
+import brandController from '../controllers/brandController.js'
 
 const router = new Router()
 
-router.get('/', '')
-router.post('/', '')
+router.get('/', brandController.getAll)
+router.post('/', brandController.create)
 
 export default router

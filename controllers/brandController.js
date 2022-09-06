@@ -1,15 +1,24 @@
 import { Brand } from '../models/Brand'
+import { ApiError } from '../helpers/apiError'
 
 class BrandController {
-	async create(req, res) {
-		const { name } = req.body
-		const brand = await Brand.create({ name })
-		return res.status(200).json(brand)
+	async create(req, res, next) {
+		try {
+			const { name } = req.body
+			const brand = await Brand.create({ name })
+			return res.status(200).json(brand)
+		} catch (e) {
+			return next(ApiError.badRequest('Failed to create brand'))
+		}
 	}
 
 	async getAll(req, res) {
-		const brands = await Brand.findAll()
-		return res.status(200).json(brands)
+		try {
+			const brands = await Brand.findAll()
+			return res.status(200).json(brands)
+		} catch (e) {
+			next(ApiError.badRequest('Failed to get all brands'))
+		}
 	}
 }
 
