@@ -1,9 +1,10 @@
-import { Router } from "express";
+import { Router } from 'express'
+import vehicleController from '../controllers/vehicleController.js'
 
 const router = new Router()
 
-router.post('/', () => {})
-router.get('/', () => {})
-router.get('/:id', () => {})
+router.post('/', vehicleController.create)
+router.get('/', vehicleController.getAll)
+router.get('/:id', vehicleController.getOne)
 
 export default router
