@@ -1,5 +1,5 @@
-import Type from '../models/Type.js'
-import ApiError from '../error/ApiError.js'
+import {Type} from '../models/Type.js'
+import {ApiError} from '../helpers/ApiError.js'
 
 class TypeController {
     async create(req, res, next) {
