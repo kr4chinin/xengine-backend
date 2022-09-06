@@ -5,6 +5,7 @@ import { config } from 'dotenv'
 import models from './models/index.js'
 import sequelize from './db.js'
 import ErrorHandler from './middleware/ErrorHandler.js'
+import apiRouter from './routes/index.js'
 
 config()
 
@@ -15,6 +16,8 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 app.use(fileUpload({}))
+
+app.use('/api', apiRouter)
 
 app.use(ErrorHandler)
 
