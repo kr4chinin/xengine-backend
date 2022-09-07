@@ -6,21 +6,21 @@ class CartController {
 	async addToCart(req, res) {
 		try {
 			const { vehicleId, userId } = req.body
-            
-            // Check if user already has a cart
-            let cart = await Cart.findOne({ where: { userId } })
 
-            if (!cart) {
-                // If not, create a new cart
-                cart = await Cart.create({ userId })
-            }
+			// Check if user already has a cart
+			let cart = await Cart.findOne({ where: { userId } })
 
-            const cartId = cart.id
+			if (!cart) {
+				// If not, create a new cart
+				cart = await Cart.create({ userId })
+			}
 
-            // Add vehicle to cart
-            const cartVehicle = await CartVehicle.create({ cartId, vehicleId })
+			const cartId = cart.id
 
-            return res.status(OK).json(cartVehicle)
+			// Add vehicle to cart
+			const cartVehicle = await CartVehicle.create({ cartId, vehicleId })
+
+			return res.status(OK).json(cartVehicle)
 		} catch (e) {
 			return res.status(BAD_REQUEST).json({ message: 'Failed to add to cart' })
 		}

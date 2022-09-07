@@ -40,7 +40,9 @@ class VehicleController {
 					path.resolve(__dirname, '..', 'static', 'images', fileName)
 				)
 
-				return res.status(BAD_REQUEST).json({ message: 'Failed to create a new vehicle' })
+				return res
+					.status(BAD_REQUEST)
+					.json({ message: 'Failed to create a new vehicle' })
 			}
 
 			// Creating information objects for every vehicle (if info was provided)
@@ -59,7 +61,9 @@ class VehicleController {
 
 			if (vehicle) return res.status(OK).json(vehicle)
 		} catch (e) {
-			return res.status(BAD_REQUEST).json({ message: 'Failed to create a new vehicle' })
+			return res
+				.status(BAD_REQUEST)
+				.json({ message: 'Failed to create a new vehicle' })
 		}
 	}
 
@@ -117,13 +121,15 @@ class VehicleController {
 
 			const vehicle = await Vehicle.findOne({
 				where: { id },
-                // including info objects for vehicle (if any) to get them in response
+				// including info objects for vehicle (if any) to get them in response
 				include: [{ model: VehicleInfo, as: 'info' }]
 			})
 
 			return res.status(OK).json(vehicle)
 		} catch (e) {
-			return res.status(BAD_REQUEST).json({ message: 'Failed to get vehicle by id' })
+			return res
+				.status(BAD_REQUEST)
+				.json({ message: 'Failed to get vehicle by id' })
 		}
 	}
 }
