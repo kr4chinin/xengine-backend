@@ -7,12 +7,11 @@ class CartController {
 		try {
 			const { vehicleId, userId } = req.body
 
-			// Check if user already has a cart
+			// Find user's cart
 			let cart = await Cart.findOne({ where: { userId } })
 
 			if (!cart) {
-				// If not, create a new cart
-				cart = await Cart.create({ userId })
+                return res.status(BAD_REQUEST).json({ message: 'Cart not found' })
 			}
 
 			const cartId = cart.id
