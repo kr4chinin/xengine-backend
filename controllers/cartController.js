@@ -21,7 +21,7 @@ class CartController {
 
 			return res.status(OK).json(cartVehicle)
 		} catch (e) {
-			return res.status(BAD_REQUEST).json({ message: 'Failed to add to cart' })
+			return res.status(BAD_REQUEST).json({ message: 'Failed to add to cart', cause: e.message })
 		}
 	}
 
@@ -42,7 +42,9 @@ class CartController {
 			await CartVehicle.destroy({ where: { cartId, vehicleId } })
 
 			return res.status(OK).json('Vehicle removed from cart')
-		} catch (e) {}
+		} catch (e) {
+            return res.status(BAD_REQUEST).json({ message: 'Failed to remove from cart', cause: e.message })
+        }
 	}
 
 	async getAll(req, res) {
@@ -65,7 +67,7 @@ class CartController {
 		} catch (e) {
 			return res
 				.status(BAD_REQUEST)
-				.json({ message: 'Failed to get elements from cart' })
+				.json({ message: 'Failed to get elements from cart', cause: e.message })
 		}
 	}
 }

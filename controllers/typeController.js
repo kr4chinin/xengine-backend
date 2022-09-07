@@ -10,7 +10,7 @@ class TypeController {
 		} catch (e) {
 			return res
 				.status(BAD_REQUEST)
-				.json({ message: 'Failed to create a new type' })
+				.json({ message: 'Failed to create a new type', cause: e.message })
 		}
 	}
 
@@ -21,7 +21,7 @@ class TypeController {
 		} catch (e) {
 			return res
 				.status(BAD_REQUEST)
-				.json({ message: 'Failed to get all types' })
+				.json({ message: 'Failed to get all types', cause: e.message })
 		}
 	}
 }

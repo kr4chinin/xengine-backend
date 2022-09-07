@@ -26,7 +26,7 @@ class RatingController {
 
 			return res.status(OK).json(newRating)
 		} catch (e) {
-			return res.status(BAD_REQUEST).json({ message: 'Failed to set rating' })
+			return res.status(BAD_REQUEST).json({ message: 'Failed to set rating', cause: e.message })
 		}
 	}
 }

@@ -10,7 +10,7 @@ class BrandController {
 		} catch (e) {
 			return res
 				.status(BAD_REQUEST)
-				.json({ message: 'Failed to create a new brand' })
+				.json({ message: 'Failed to create a new brand', cause: e.message })
 		}
 	}
 
@@ -21,7 +21,7 @@ class BrandController {
 		} catch (e) {
 			return res
 				.status(BAD_REQUEST)
-				.json({ message: 'Failed to get all brands' })
+				.json({ message: 'Failed to get all brands', cause: e.message })
 		}
 	}
 }

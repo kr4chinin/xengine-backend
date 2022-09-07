@@ -51,7 +51,7 @@ class UserController {
 
 			return res.status(OK).json({ token })
 		} catch (e) {
-			return res.status(BAD_REQUEST).json({ message: 'Registration failed' })
+			return res.status(BAD_REQUEST).json({ message: 'Registration failed', cause: e.message })
 		}
 	}
 
@@ -80,7 +80,7 @@ class UserController {
 
 			return res.status(OK).json({ token })
 		} catch (e) {
-			return res.status(BAD_REQUEST).json({ message: 'Login failed' })
+			return res.status(BAD_REQUEST).json({ message: 'Login failed', cause: e.message })
 		}
 	}
 
@@ -89,7 +89,7 @@ class UserController {
 			const token = generateJwt(req.user.id, req.user.email, req.user.role)
 			return res.status(OK).json({ token })
 		} catch (e) {
-			return res.status(UNAUTHORIZED).json({ message: 'Unauthorized' })
+			return res.status(UNAUTHORIZED).json({ message: 'Unauthorized', cause: e.message })
 		}
 	}
 }

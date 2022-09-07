@@ -42,7 +42,7 @@ class VehicleController {
 
 				return res
 					.status(BAD_REQUEST)
-					.json({ message: 'Failed to create a new vehicle' })
+					.json({ message: 'Failed to create a new vehicle', cause: e.message })
 			}
 
 			// Creating information objects for every vehicle (if info was provided)
@@ -63,7 +63,7 @@ class VehicleController {
 		} catch (e) {
 			return res
 				.status(BAD_REQUEST)
-				.json({ message: 'Failed to create a new vehicle' })
+				.json({ message: 'Failed to create a new vehicle', cause: e.message})
 		}
 	}
 
@@ -111,7 +111,7 @@ class VehicleController {
 
 			return res.status(OK).json(vehicles)
 		} catch (e) {
-			return res.status(BAD_REQUEST).json({ message: 'Failed to get vehicles' })
+			return res.status(BAD_REQUEST).json({ message: 'Failed to get vehicles', cause: e.message })
 		}
 	}
 
@@ -129,7 +129,7 @@ class VehicleController {
 		} catch (e) {
 			return res
 				.status(BAD_REQUEST)
-				.json({ message: 'Failed to get vehicle by id' })
+				.json({ message: 'Failed to get vehicle by id', cause: e.message })
 		}
 	}
 }
