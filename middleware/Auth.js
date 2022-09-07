@@ -14,7 +14,7 @@ export default function (req, res, next) {
 			if (!token) {
 				return res
 					.status(UNAUTHORIZED)
-					.json({ message: 'Failed to authorize, no token provided' })
+					.json({ message: 'Failed to authorize, no token provided', cause: null })
 			}
 
 			// If we have a token we will try to verify it
@@ -24,9 +24,9 @@ export default function (req, res, next) {
 		} else {
 			return res
 				.status(UNAUTHORIZED)
-				.json({ message: 'Failed to authorize, no authorization header' })
+				.json({ message: 'Failed to authorize, no authorization header', cause: null })
 		}
 	} catch (e) {
-		return res.status(UNAUTHORIZED).json({ message: 'Failed to authorize' })
+		return res.status(UNAUTHORIZED).json({ message: 'Failed to authorize', cause: e.message })
 	}
 }
