@@ -12,7 +12,7 @@ class RatingController {
 			})
 
 			if (ratingExists) {
-                // Update exsisting rating
+				// Update exsisting rating
 				await ratingExists.update({ rate: Number(rate) })
 				return res.status(OK).json(ratingExists)
 			}
@@ -26,7 +26,36 @@ class RatingController {
 
 			return res.status(OK).json(newRating)
 		} catch (e) {
-			return res.status(BAD_REQUEST).json({ message: 'Failed to set rating', cause: e.message })
+			return res
+				.status(BAD_REQUEST)
+				.json({ message: 'Failed to set rating', cause: e.message })
+		}
+	}
+
+	async calculateAverageRating(req, res) {
+		try {
+			const { vehicleId } = req.query
+
+			// Get all ratings from vehicle
+			const ratings = await Rating.findAll({ where: { vehicleId } })
+
+			if (!ratings) {
+				return res
+					.status(BAD_REQUEST)
+					.json({ message: 'Ratings not found', cause: null })
+			}
+
+			// Calculate average rating
+			const averageRating = Math.round(
+				ratings.reduce((acc, rating) => acc + rating.rate, 0) / ratings.length
+			)
+
+			return res.status(OK).json(averageRating)
+		} catch (e) {
+			return res.status(BAD_REQUEST).json({
+				message: 'Failed to calculate average rating',
+				cause: e.message
+			})
 		}
 	}
 }
