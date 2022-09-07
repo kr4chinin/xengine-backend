@@ -25,6 +25,50 @@ class CartController {
 			return res.status(BAD_REQUEST).json({ message: 'Failed to add to cart' })
 		}
 	}
+
+	async removeFromCart(req, res) {
+		try {
+			const { vehicleId, userId } = req.body
+
+			// Get user's cart
+			const cart = await Cart.findOne({ where: { userId } })
+
+			if (!cart) {
+				return res.status(BAD_REQUEST).json({ message: 'Cart not found' })
+			}
+
+			const cartId = cart.id
+
+			// Remove vehicle from cart
+			await CartVehicle.destroy({ where: { cartId, vehicleId } })
+
+			return res.status(OK).json('Vehicle removed from cart')
+		} catch (e) {}
+	}
+
+	async getAll(req, res) {
+		try {
+			const { userId } = req.query
+
+			// Get user's cart
+			const cart = await Cart.findOne({ where: { userId } })
+
+			if (!cart) {
+				return res.status(BAD_REQUEST).json({ message: 'Cart not found' })
+			}
+
+			const cartId = cart.id
+
+			// Get all vehicles from found cart
+			const vehicles = await CartVehicle.findAll({ where: { cartId } })
+
+			return res.status(OK).json(vehicles)
+		} catch (e) {
+			return res
+				.status(BAD_REQUEST)
+				.json({ message: 'Failed to get elements from cart' })
+		}
+	}
 }
 
 export default new CartController()
