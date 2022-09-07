@@ -65,14 +65,14 @@ class UserController {
 			if (!user) {
 				return res
 					.status(BAD_REQUEST)
-					.json({ message: 'User with this email not found' })
+					.json({ message: 'User with this email not found', cause: null })
 			}
 
 			// Checking password
 			const isPasswordValid = bcrypt.compareSync(password, user.password)
 
 			if (!isPasswordValid) {
-				return res.status(BAD_REQUEST).json({ message: 'Invalid password' })
+				return res.status(BAD_REQUEST).json({ message: 'Invalid password', cause: null })
 			}
 
 			// Generating JWT token

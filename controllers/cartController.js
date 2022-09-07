@@ -11,7 +11,7 @@ class CartController {
 			let cart = await Cart.findOne({ where: { userId } })
 
 			if (!cart) {
-                return res.status(BAD_REQUEST).json({ message: 'Cart not found' })
+                return res.status(BAD_REQUEST).json({ message: 'Cart not found', cause: null })
 			}
 
 			const cartId = cart.id
@@ -33,7 +33,7 @@ class CartController {
 			const cart = await Cart.findOne({ where: { userId } })
 
 			if (!cart) {
-				return res.status(BAD_REQUEST).json({ message: 'Cart not found' })
+				return res.status(BAD_REQUEST).json({ message: 'Cart not found', cause: null })
 			}
 
 			const cartId = cart.id
@@ -55,7 +55,7 @@ class CartController {
 			const cart = await Cart.findOne({ where: { userId } })
 
 			if (!cart) {
-				return res.status(BAD_REQUEST).json({ message: 'Cart not found' })
+				return res.status(BAD_REQUEST).json({ message: 'Cart not found', cause: null })
 			}
 
 			const cartId = cart.id
