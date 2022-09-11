@@ -132,6 +132,21 @@ class VehicleController {
 				.json({ message: 'Failed to get vehicle by id', cause: e.message })
 		}
 	}
+
+    async getThreeMostPopular(_, res) {
+        try {
+            const vehicles = await Vehicle.findAll({
+                limit: 3,
+                order: [['rating', 'DESC']]
+            })
+
+            return res.status(OK).json(vehicles)
+        } catch (e) {
+            return res
+                .status(BAD_REQUEST)
+                .json({ message: 'Failed to get three most popular vehicles', cause: e.message })
+        }
+    }
 }
 
 export default new VehicleController()

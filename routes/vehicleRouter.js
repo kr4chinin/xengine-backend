@@ -6,6 +6,7 @@ const router = new Router()
 
 router.post('/', CheckRole('ADMIN'), vehicleController.create)
 router.get('/', vehicleController.getAll)
+router.get('/popular', vehicleController.getThreeMostPopular)
 router.get('/:id', vehicleController.getOne)
 
 export default router
