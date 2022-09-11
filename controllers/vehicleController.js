@@ -63,13 +63,13 @@ class VehicleController {
 		} catch (e) {
 			return res
 				.status(BAD_REQUEST)
-				.json({ message: 'Failed to create a new vehicle', cause: e.message})
+				.json({ message: 'Failed to create a new vehicle', cause: e.message })
 		}
 	}
 
 	async getAll(req, res) {
 		try {
-			const { brandId, typeId, limit = 1, page = 1 } = req.query
+			const { brandId, typeId, limit = 1, page = 1, sort = '' } = req.query
 
 			// Calculating offset for pagination
 			let offset = page * limit - limit
@@ -82,7 +82,9 @@ class VehicleController {
 				vehicles = await Vehicle.findAndCountAll({
 					where: { brandId, typeId },
 					limit,
-					offset
+					offset,
+					// sort parameter is used to sort vehicles, sort -> price_DESC, name_ASC etc.
+					order: sort ? [[sort.split('_')[0], sort.split('_')[1]]] : []
 				})
 			}
 
@@ -91,7 +93,8 @@ class VehicleController {
 				vehicles = await Vehicle.findAndCountAll({
 					where: { brandId },
 					limit,
-					offset
+					offset,
+					order: sort ? [[sort.split('_')[0], sort.split('_')[1]]] : []
 				})
 			}
 
@@ -100,18 +103,25 @@ class VehicleController {
 				vehicles = await Vehicle.findAndCountAll({
 					where: { typeId },
 					limit,
-					offset
+					offset,
+					order: sort ? [[sort.split('_')[0], sort.split('_')[1]]] : []
 				})
 			}
 
 			// If neither brandId nor typeId are provided, get all vehicles
 			if (!brandId && !typeId) {
-				vehicles = await Vehicle.findAndCountAll({ limit, offset })
+				vehicles = await Vehicle.findAndCountAll({
+					limit,
+					offset,
+					order: sort ? [[sort.split('_')[0], sort.split('_')[1]]] : []
+				})
 			}
 
 			return res.status(OK).json(vehicles)
 		} catch (e) {
-			return res.status(BAD_REQUEST).json({ message: 'Failed to get vehicles', cause: e.message })
+			return res
+				.status(BAD_REQUEST)
+				.json({ message: 'Failed to get vehicles', cause: e.message })
 		}
 	}
 
@@ -133,20 +143,23 @@ class VehicleController {
 		}
 	}
 
-    async getThreeMostPopular(_, res) {
-        try {
-            const vehicles = await Vehicle.findAll({
-                limit: 3,
-                order: [['rating', 'DESC']]
-            })
+	async getThreeMostPopular(_, res) {
+		try {
+			const vehicles = await Vehicle.findAll({
+				limit: 3,
+				order: [['rating', 'DESC']]
+			})
 
-            return res.status(OK).json(vehicles)
-        } catch (e) {
-            return res
-                .status(BAD_REQUEST)
-                .json({ message: 'Failed to get three most popular vehicles', cause: e.message })
-        }
-    }
+			return res.status(OK).json(vehicles)
+		} catch (e) {
+			return res
+				.status(BAD_REQUEST)
+				.json({
+					message: 'Failed to get three most popular vehicles',
+					cause: e.message
+				})
+		}
+	}
 }
 
 export default new VehicleController()
