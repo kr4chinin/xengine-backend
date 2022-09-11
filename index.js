@@ -19,7 +19,7 @@ app.use(express.json())
 app.use(fileUpload({}))
 
 // To make server understand static files
-app.use(express.static(path.resolve(__dirname, '..', 'static')))
+app.use(express.static(path.resolve(__dirname, '..', 'static', 'images')))
 
 app.use('/api', apiRouter)
 
