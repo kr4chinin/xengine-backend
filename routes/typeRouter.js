@@ -6,5 +6,6 @@ const router = new Router()
 
 router.post('/', CheckRole('ADMIN'), typeController.create)
 router.get('/', typeController.getAll)
+router.get('/:id', typeController.getOneById)
 
 export default router

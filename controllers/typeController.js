@@ -14,6 +14,19 @@ class TypeController {
 		}
 	}
 
+	async getOneById(req, res) {
+		try {
+			const { id } = req.params
+			const type = await Type.findOne({ where: { id } })
+			return res.status(OK).json(type)
+		} catch (e) {
+			return res
+
+				.status(BAD_REQUEST)
+				.json({ message: 'Failed to get type', cause: e.message })
+		}
+	}
+
 	async getAll(_, res) {
 		try {
 			const types = await Type.findAll()

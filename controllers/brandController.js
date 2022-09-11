@@ -24,6 +24,18 @@ class BrandController {
 				.json({ message: 'Failed to get all brands', cause: e.message })
 		}
 	}
+
+    async getOneById(req, res) {
+        try {
+            const { id } = req.params
+            const brand = await Brand.findOne({ where: { id } })
+            return res.status(OK).json(brand)
+        } catch (e) {
+            return res
+                .status(BAD_REQUEST)
+                .json({ message: 'Failed to get brand', cause: e.message })
+        }
+    }
 }
 
 export default new BrandController()
