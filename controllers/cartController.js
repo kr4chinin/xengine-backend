@@ -1,6 +1,7 @@
 import { OK, BAD_REQUEST } from '../utils/Statuses.js'
 import { Cart } from '../models/Cart.js'
 import { CartVehicle } from '../models/CartVehicle.js'
+import { Vehicle } from '../models/Vehicle.js'
 
 class CartController {
 	async addToCart(req, res) {
@@ -11,7 +12,9 @@ class CartController {
 			let cart = await Cart.findOne({ where: { userId } })
 
 			if (!cart) {
-                return res.status(BAD_REQUEST).json({ message: 'Cart not found', cause: null })
+				return res
+					.status(BAD_REQUEST)
+					.json({ message: 'Cart not found', cause: null })
 			}
 
 			const cartId = cart.id
@@ -21,7 +24,9 @@ class CartController {
 
 			return res.status(OK).json(cartVehicle)
 		} catch (e) {
-			return res.status(BAD_REQUEST).json({ message: 'Failed to add to cart', cause: e.message })
+			return res
+				.status(BAD_REQUEST)
+				.json({ message: 'Failed to add to cart', cause: e.message })
 		}
 	}
 
@@ -33,7 +38,9 @@ class CartController {
 			const cart = await Cart.findOne({ where: { userId } })
 
 			if (!cart) {
-				return res.status(BAD_REQUEST).json({ message: 'Cart not found', cause: null })
+				return res
+					.status(BAD_REQUEST)
+					.json({ message: 'Cart not found', cause: null })
 			}
 
 			const cartId = cart.id
@@ -43,8 +50,10 @@ class CartController {
 
 			return res.status(OK).json('Vehicle removed from cart')
 		} catch (e) {
-            return res.status(BAD_REQUEST).json({ message: 'Failed to remove from cart', cause: e.message })
-        }
+			return res
+				.status(BAD_REQUEST)
+				.json({ message: 'Failed to remove from cart', cause: e.message })
+		}
 	}
 
 	async getAll(req, res) {
@@ -55,13 +64,24 @@ class CartController {
 			const cart = await Cart.findOne({ where: { userId } })
 
 			if (!cart) {
-				return res.status(BAD_REQUEST).json({ message: 'Cart not found', cause: null })
+				return res
+					.status(BAD_REQUEST)
+					.json({ message: 'Cart not found', cause: null })
 			}
 
 			const cartId = cart.id
 
 			// Get all vehicles from found cart
-			const vehicles = await CartVehicle.findAll({ where: { cartId } })
+			const cartVehicles = await CartVehicle.findAll({ where: { cartId } })
+
+			let vehicles = []
+
+			for (let i = 0; i < cartVehicles.length; i++) {
+				const vehicle = await Vehicle.findAll({
+					where: { id: cartVehicles[i].vehicleId }
+				})
+				vehicles.push(vehicle[0])
+			}
 
 			return res.status(OK).json(vehicles)
 		} catch (e) {
