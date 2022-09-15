@@ -90,6 +90,36 @@ class CartController {
 				.json({ message: 'Failed to get elements from cart', cause: e.message })
 		}
 	}
+
+    async isInCart(req, res) {
+        try {
+            const { vehicleId, userId } = req.query
+
+            // Get user's cart
+            const cart = await Cart.findOne({ where: { userId } })
+
+            if (!cart) {
+                return res
+                    .status(BAD_REQUEST)
+                    .json({ message: 'Cart not found', cause: null })
+            }
+
+            const cartId = cart.id
+
+            // Check if vehicle is in the cart
+            const cartVehicle = await CartVehicle.findOne({ where: { cartId, vehicleId } })
+
+            if (!cartVehicle) {
+                return res.status(OK).json(false)
+            }
+
+            return res.status(OK).json(true)
+        } catch (e) {
+            return res
+                .status(BAD_REQUEST)
+                .json({ message: 'Failed to get elements from cart', cause: e.message })
+        }
+    }
 }
 
 export default new CartController()

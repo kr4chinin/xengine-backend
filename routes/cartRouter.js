@@ -6,5 +6,6 @@ const router = new Router()
 router.post('/', cartController.addToCart)
 router.delete('/', cartController.removeFromCart)
 router.get('/', cartController.getAll)
+router.get('/check', cartController.isInCart)
 
 export default router
