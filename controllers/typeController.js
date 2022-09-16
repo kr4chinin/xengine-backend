@@ -1,9 +1,17 @@
 import { Type } from '../models/Type.js'
 import { BAD_REQUEST, OK } from '../utils/Statuses.js'
+import { validationResult } from 'express-validator'
 
 class TypeController {
 	async create(req, res) {
 		try {
+			// Checking validation result
+			const errors = validationResult(req)
+
+			if (!errors.isEmpty()) {
+				return res.status(BAD_REQUEST).json({ message: 'Incorrect type name' })
+			}
+
 			const { name } = req.body
 			const type = await Type.create({ name })
 			return res.status(OK).json(type)
