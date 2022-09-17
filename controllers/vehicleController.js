@@ -1,6 +1,7 @@
 import * as uuid from 'uuid'
 import { Vehicle } from '../models/Vehicle.js'
 import { VehicleInfo } from '../models/VehicleInfo.js'
+import { Rating } from '../models/Rating.js'
 import path from 'path'
 import { __dirname } from '../helpers/dirname.js'
 import fs from 'fs'
@@ -145,12 +146,44 @@ class VehicleController {
 
 	async getThreeMostPopular(_, res) {
 		try {
-			const vehicles = await Vehicle.findAll({
-				limit: 3,
-				order: [['rating', 'DESC']]
-			})
+			const vehicles = await Vehicle.findAll()
 
-			return res.status(OK).json(vehicles)
+            // Sorting vehicles by rating
+            let vehiclesRatings = new Map()
+
+            for (let i = 0; i < vehicles.length; i++) { 
+                let vehicleId = vehicles[i].id
+
+                // Get all ratings from vehicle
+                let ratings = await Rating.findAll({ where: { vehicleId } })
+
+                // If vehicle currently has no rates -> set default rate value to 0
+                if (ratings.length === 0) {
+                    ratings = [{ rate: 0 }]
+                }
+    
+                // Calculate average rating
+                const averageRating = Math.round(
+                    ratings.reduce((acc, rating) => acc + rating.rate, 0) / ratings.length
+                )
+
+                vehiclesRatings.set(vehicleId, averageRating)
+            }
+
+            // Get 3 most popular vehicles from vehiclesRatings map where key 
+            // is vehicleId and value is average rating
+            const mostPopularVehicles = [...vehiclesRatings.entries()]
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 3)
+
+            // Get vehicles by id
+            const popularVehiclesById = await Vehicle.findAll({
+                where: {
+                    id: mostPopularVehicles.map(v => v[0])
+                }
+            })
+
+            return res.status(OK).json(popularVehiclesById)
 		} catch (e) {
 			return res
 				.status(BAD_REQUEST)
