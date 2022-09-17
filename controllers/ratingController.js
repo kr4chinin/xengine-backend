@@ -58,6 +58,29 @@ class RatingController {
 			})
 		}
 	}
+
+	async getUserRating(req, res) {
+		try {
+			const { userId } = req.params
+			const { vehicleId } = req.query
+
+			// Get user rating
+			const rating = await Rating.findOne({ where: { vehicleId, userId } })
+
+			if (!rating) {
+				return res
+					.status(BAD_REQUEST)
+					.json({ message: 'Rating not found', cause: null })
+			}
+
+			return res.status(OK).json(rating)
+		} catch (e) {
+			return res.status(BAD_REQUEST).json({
+				message: 'Failed to get user rating',
+				cause: e.message
+			})
+		}
+	}
 }
 
 export default new RatingController()
