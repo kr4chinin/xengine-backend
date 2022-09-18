@@ -8,5 +8,6 @@ router.post('/', CheckRole('ADMIN'), vehicleController.create)
 router.get('/', vehicleController.getAll)
 router.get('/popular', vehicleController.getThreeMostPopular)
 router.get('/:id', vehicleController.getOne)
+router.delete('/', CheckRole('ADMIN'), vehicleController.deleteVehicle)
 
 export default router

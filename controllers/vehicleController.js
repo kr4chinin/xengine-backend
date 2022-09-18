@@ -193,6 +193,21 @@ class VehicleController {
 				})
 		}
 	}
+
+    async deleteVehicle(req, res) {
+        try {
+            const { vehicleId } = req.body
+
+            // Deleting vehicle by id
+            await Vehicle.destroy({ where: { vehicleId } })
+
+            return res.status(OK).json({ message: 'Vehicle deleted successfully' })
+        } catch (e) {
+            return res
+                .status(BAD_REQUEST)
+                .json({ message: 'Failed to delete vehicle', cause: e.message })
+        }
+    }
 }
 
 export default new VehicleController()
