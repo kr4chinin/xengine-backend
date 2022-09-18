@@ -91,70 +91,72 @@ class CartController {
 		}
 	}
 
-    async isInCart(req, res) {
-        try {
-            const { vehicleId, userId } = req.query
+	async isInCart(req, res) {
+		try {
+			const { vehicleId, userId } = req.query
 
-            // Get user's cart
-            const cart = await Cart.findOne({ where: { userId } })
+			// Get user's cart
+			const cart = await Cart.findOne({ where: { userId } })
 
-            if (!cart) {
-                return res
-                    .status(BAD_REQUEST)
-                    .json({ message: 'Cart not found', cause: null })
-            }
+			if (!cart) {
+				return res
+					.status(BAD_REQUEST)
+					.json({ message: 'Cart not found', cause: null })
+			}
 
-            const cartId = cart.id
+			const cartId = cart.id
 
-            // Check if vehicle is in the cart
-            const cartVehicle = await CartVehicle.findOne({ where: { cartId, vehicleId } })
+			// Check if vehicle is in the cart
+			const cartVehicle = await CartVehicle.findOne({
+				where: { cartId, vehicleId }
+			})
 
-            if (!cartVehicle) {
-                return res.status(OK).json(false)
-            }
+			if (!cartVehicle) {
+				return res.status(OK).json(false)
+			}
 
-            return res.status(OK).json(true)
-        } catch (e) {
-            return res
-                .status(BAD_REQUEST)
-                .json({ message: 'Failed to get elements from cart', cause: e.message })
-        }
-    }
+			return res.status(OK).json(true)
+		} catch (e) {
+			return res
+				.status(BAD_REQUEST)
+				.json({ message: 'Failed to get elements from cart', cause: e.message })
+		}
+	}
 
-    async calculateTotalPrice(req, res) {
-        try {
-            const { userId } = req.query
+	async calculateTotalPrice(req, res) {
+		try {
+			const { userId } = req.query
 
-            // Get user's cart
-            const cart = await Cart.findOne({ where: { userId } })
+			// Get user's cart
+			const cart = await Cart.findOne({ where: { userId } })
 
-            if (!cart) {
-                return res
-                    .status(BAD_REQUEST)
-                    .json({ message: 'Cart not found', cause: null })
-            }
+			if (!cart) {
+				return res
+					.status(BAD_REQUEST)
+					.json({ message: 'Cart not found', cause: null })
+			}
 
-            const cartId = cart.id
+			const cartId = cart.id
 
-            // Get all vehicles from found cart
-            const cartVehicles = await CartVehicle.findAll({ where: { cartId } })
+			// Get all vehicles from found cart
+			const cartVehicles = await CartVehicle.findAll({ where: { cartId } })
 
-            let totalPrice = 0
+			let totalPrice = 0
 
-            for (let i = 0; i < cartVehicles.length; i++) {
-                const vehicle = await Vehicle.findAll({
-                    where: { id: cartVehicles[i].vehicleId }
-                })
-                totalPrice += vehicle[0].price
-            }
+			for (let i = 0; i < cartVehicles.length; i++) {
+				const vehicle = await Vehicle.findAll({
+					where: { id: cartVehicles[i].vehicleId }
+				})
+				totalPrice += vehicle[0].price
+			}
 
-            return res.status(OK).json(totalPrice)
-        } catch (e) {
-            return res
-                .status(BAD_REQUEST)
-                .json({ message: 'Failed to get elements from cart', cause: e.message })
-        }
-    }
+			return res.status(OK).json(totalPrice)
+		} catch (e) {
+			return res
+				.status(BAD_REQUEST)
+				.json({ message: 'Failed to get elements from cart', cause: e.message })
+		}
+	}
 }
 
 export default new CartController()

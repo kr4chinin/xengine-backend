@@ -24,7 +24,9 @@ export default function (role) {
 
 				// If a user has a role that is not equal to the role that we are checking, then return an error
 				if (decoded.role !== role) {
-					return res.status(FORBIDDEN).json({ message: 'Access denied', cause: null })
+					return res
+						.status(FORBIDDEN)
+						.json({ message: 'Access denied', cause: null })
 				}
 
 				// Add decoded data to the request
@@ -32,7 +34,9 @@ export default function (role) {
 
 				next()
 			} else {
-                return res.status(UNAUTHORIZED).json({ message: 'No authorization header', cause: null })
+				return res
+					.status(UNAUTHORIZED)
+					.json({ message: 'No authorization header', cause: null })
 			}
 		} catch (e) {
 			return res

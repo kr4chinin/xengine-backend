@@ -51,7 +51,9 @@ class UserController {
 
 			return res.status(OK).json({ token })
 		} catch (e) {
-			return res.status(BAD_REQUEST).json({ message: 'Registration failed', cause: e.message })
+			return res
+				.status(BAD_REQUEST)
+				.json({ message: 'Registration failed', cause: e.message })
 		}
 	}
 
@@ -72,7 +74,9 @@ class UserController {
 			const isPasswordValid = bcrypt.compareSync(password, user.password)
 
 			if (!isPasswordValid) {
-				return res.status(BAD_REQUEST).json({ message: 'Invalid password', cause: null })
+				return res
+					.status(BAD_REQUEST)
+					.json({ message: 'Invalid password', cause: null })
 			}
 
 			// Generating JWT token
@@ -80,7 +84,9 @@ class UserController {
 
 			return res.status(OK).json({ token })
 		} catch (e) {
-			return res.status(BAD_REQUEST).json({ message: 'Login failed', cause: e.message })
+			return res
+				.status(BAD_REQUEST)
+				.json({ message: 'Login failed', cause: e.message })
 		}
 	}
 
@@ -89,7 +95,9 @@ class UserController {
 			const token = generateJwt(req.user.id, req.user.email, req.user.role)
 			return res.status(OK).json({ token })
 		} catch (e) {
-			return res.status(UNAUTHORIZED).json({ message: 'Unauthorized', cause: e.message })
+			return res
+				.status(UNAUTHORIZED)
+				.json({ message: 'Unauthorized', cause: e.message })
 		}
 	}
 }

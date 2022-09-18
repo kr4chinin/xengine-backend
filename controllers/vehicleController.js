@@ -148,66 +148,64 @@ class VehicleController {
 		try {
 			const vehicles = await Vehicle.findAll()
 
-            // Sorting vehicles by rating
-            let vehiclesRatings = new Map()
+			// Sorting vehicles by rating
+			let vehiclesRatings = new Map()
 
-            for (let i = 0; i < vehicles.length; i++) { 
-                let vehicleId = vehicles[i].id
+			for (let i = 0; i < vehicles.length; i++) {
+				let vehicleId = vehicles[i].id
 
-                // Get all ratings from vehicle
-                let ratings = await Rating.findAll({ where: { vehicleId } })
+				// Get all ratings from vehicle
+				let ratings = await Rating.findAll({ where: { vehicleId } })
 
-                // If vehicle currently has no rates -> set default rate value to 0
-                if (ratings.length === 0) {
-                    ratings = [{ rate: 0 }]
-                }
-    
-                // Calculate average rating
-                const averageRating = Math.round(
-                    ratings.reduce((acc, rating) => acc + rating.rate, 0) / ratings.length
-                )
+				// If vehicle currently has no rates -> set default rate value to 0
+				if (ratings.length === 0) {
+					ratings = [{ rate: 0 }]
+				}
 
-                vehiclesRatings.set(vehicleId, averageRating)
-            }
+				// Calculate average rating
+				const averageRating = Math.round(
+					ratings.reduce((acc, rating) => acc + rating.rate, 0) / ratings.length
+				)
 
-            // Get 3 most popular vehicles from vehiclesRatings map where key 
-            // is vehicleId and value is average rating
-            const mostPopularVehicles = [...vehiclesRatings.entries()]
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 3)
+				vehiclesRatings.set(vehicleId, averageRating)
+			}
 
-            // Get vehicles by id
-            const popularVehiclesById = await Vehicle.findAll({
-                where: {
-                    id: mostPopularVehicles.map(v => v[0])
-                }
-            })
+			// Get 3 most popular vehicles from vehiclesRatings map where key
+			// is vehicleId and value is average rating
+			const mostPopularVehicles = [...vehiclesRatings.entries()]
+				.sort((a, b) => b[1] - a[1])
+				.slice(0, 3)
 
-            return res.status(OK).json(popularVehiclesById)
+			// Get vehicles by id
+			const popularVehiclesById = await Vehicle.findAll({
+				where: {
+					id: mostPopularVehicles.map(v => v[0])
+				}
+			})
+
+			return res.status(OK).json(popularVehiclesById)
 		} catch (e) {
-			return res
-				.status(BAD_REQUEST)
-				.json({
-					message: 'Failed to get three most popular vehicles',
-					cause: e.message
-				})
+			return res.status(BAD_REQUEST).json({
+				message: 'Failed to get three most popular vehicles',
+				cause: e.message
+			})
 		}
 	}
 
-    async deleteVehicle(req, res) {
-        try {
-            const { vehicleId } = req.body
+	async deleteVehicle(req, res) {
+		try {
+			const { vehicleId } = req.body
 
-            // Deleting vehicle by id
-            await Vehicle.destroy({ where: { vehicleId } })
+			// Deleting vehicle by id
+			await Vehicle.destroy({ where: { vehicleId } })
 
-            return res.status(OK).json({ message: 'Vehicle deleted successfully' })
-        } catch (e) {
-            return res
-                .status(BAD_REQUEST)
-                .json({ message: 'Failed to delete vehicle', cause: e.message })
-        }
-    }
+			return res.status(OK).json({ message: 'Vehicle deleted successfully' })
+		} catch (e) {
+			return res
+				.status(BAD_REQUEST)
+				.json({ message: 'Failed to delete vehicle', cause: e.message })
+		}
+	}
 }
 
 export default new VehicleController()
